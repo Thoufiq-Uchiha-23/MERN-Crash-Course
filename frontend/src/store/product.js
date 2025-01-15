@@ -14,10 +14,47 @@ export const useProductStore = create((set) => ({
       },
       body: JSON.stringify(newProduct),
     });
-    console.log(res)
+    console.log(res);
     const data = await res.json();
-    console.log(data)
+    console.log(data);
     set((state) => ({ products: [...state.products, data.data] }));
     return { success: true, message: "Product created successfully" };
+  },
+  fetchProducts: async () => {
+    const res = await fetch("/api/products");
+    const data = await res.json();
+    set({ products: data.data });
+  },
+  deleteProduct: async (pid) => {
+    const res = await fetch(`/api/products/${pid}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    if (!data.success) return { success: false, message: data.message };
+    // update ui immediately without the refresh
+    set((state) => ({
+      products: state.products.filter((product) => product._id !== pid),
+    }));
+    return { success: true, message: data.message };
+  },
+  updateProduct: async (pid, updatedProduct) => {
+    const res = await fetch(`/api/products/${pid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProduct),
+    });
+    const data = await res.json();
+    if (!data.success) return { success: false, message: data.message };
+
+    // update the ui immediately, without needing a refresh
+    set((state) => ({
+      products: state.products.map((product) =>
+        product._id === pid ? data.data : product
+      ),
+    }));
+
+    return { success: true, message: data.message };
   },
 }));
