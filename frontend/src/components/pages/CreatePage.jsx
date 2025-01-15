@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { useColorModeValue } from "../ui/color-mode";
 import { useProductStore } from "@/store/product"; // Verify this path is correct
+import { Toaster, toaster } from "@/components/ui/toaster";
 
 const CreatePage = () => {
   const [newProduct, setNewProduct] = useState({
@@ -20,12 +21,29 @@ const CreatePage = () => {
   const { createProduct } = useProductStore();
   const handleAddProduct = async () => {
     const { success, message } = await createProduct(newProduct);
-    console.log(newProduct)
-    console.log("Success:", success);
-    console.log("Message:", message);
+    // console.log(newProduct)
+    // console.log("Success:", success);
+    // console.log("Message:", message);
+    if (!success) {
+      toaster.create({
+        title: "Error",
+        description: message,
+        status: "error",
+        isClosable: true,
+      });
+    } else {
+      toaster.create({
+        title: "Success",
+        description: message,
+        status: "success",
+        isClosable: true,
+      });
+    }
+    setNewProduct({ name: "", price: "", image: "" });
   };
   return (
     <Container maxW={"container.sm"}>
+      <Toaster />
       <VStack spacing={8}>
         <Heading as={"h1"} size={"2xl"} textAlign={"center"} mb={8}>
           Create a new product
