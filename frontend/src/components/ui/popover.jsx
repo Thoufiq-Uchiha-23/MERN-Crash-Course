@@ -1,4 +1,4 @@
-import { Popover as ChakraPopover, Portal } from '@chakra-ui/react'
+import { Popover as ChakraPopover, Portal, Button } from '@chakra-ui/react'
 import { CloseButton } from './close-button'
 import * as React from 'react'
 
@@ -35,6 +35,23 @@ export const PopoverCloseTrigger = React.forwardRef(
         ref={ref}
       >
         <CloseButton size='sm' />
+      </ChakraPopover.CloseTrigger>
+    )
+  },
+)
+
+export const PopoverCancel = React.forwardRef(
+  function PopoverCancel(props, ref) {
+    return (
+      <ChakraPopover.CloseTrigger
+        position='static'
+        top='1'
+        insetEnd='1'
+        {...props}
+        asChild
+        ref={ref}
+      >
+        <Button>Cancel</Button>
       </ChakraPopover.CloseTrigger>
     )
   },
